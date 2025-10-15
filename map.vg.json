@@ -4,6 +4,33 @@
 	"width": 1200,
 	"height": 600,
 	"projection": { "type": "mercator", "scale": 3000, "center": [110, 4] },
+	"params": [
+		{
+			"name": "name_selection",
+			"bind": {
+				"input": "select",
+				"options": [
+					null,
+					"Senai International Airport",
+					"Kuala Lumpur International Airport",
+					"Penang International Airport",
+					"Sultan Abdul Aziz Shah International Airport",
+					"Kota Kinabalu International Airport",
+					"Malacca International Airport"
+				],
+				"labels":[
+					"Show All",
+					"Senai International Airport",
+					"Kuala Lumpur International Airport",
+					"Penang International Airport",
+					"Sultan Abdul Aziz Shah International Airport",
+					"Kota Kinabalu International Airport",
+					"Malacca International Airport"
+				],
+				"name": "Airport Selection: "
+			}
+		}
+	],
 	"layer": [
 		{
 		"data": {
@@ -24,9 +51,44 @@
 			"encoding": {
 				"longitude": { "field": "longitude", "type": "quantitative" },
 				"latitude": { "field": "latitude", "type": "quantitative" },
-				"size": { "aggregate": "count", "field": "iso_country", "type": "quantitative", "legend": { "title": "Number of Flights" } },
-				"color": { "value": "steelblue" }
-			}
+								"size": { 
+					"aggregate": "count", 
+					"field": "iso_country", 
+					"type": "quantitative", 
+					"legend": { 
+						"title": "Number of Flights",
+						"values": [30, 60, 90, 120, 150],
+						"labelExpr": "datum.value == 30 ? '< 30' : datum.value == 60 ? '30 - 60' : datum.value == 90 ? '61 - 90' : datum.value == 120 ? '91 - 120' : datum.value == 150 ? '> 120' : ''"
+					}, 
+					"scale": { 
+						"domain": [30, 60, 90, 120, 150],
+						"range": [100, 175, 250, 325, 400]
+					} 
+				},
+				"color": { "value": "steelblue" },
+				"opacity": {
+					"value": 1
+				},
+				"tooltip": [
+					{
+						"field": "name",
+						"type": "nominal",
+						"title": "Airport Name"
+					},
+					{
+						"field": "size",
+						"aggregate": "count",
+						"type": "quantitative",
+						"title": "Number of Flights"
+					}
+				]
+			},
+
+				"transform": [
+					{
+						"filter": "name_selection == null || datum.name == name_selection"
+					}
+				]
 		},
 		{
 			"data": { "url": "MY.csv" },
